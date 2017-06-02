@@ -1,7 +1,7 @@
 {
   "name": "snog",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Experimental hybrid of a snapshot and a log.",
   "main": "index.js",
   "bin": {
     "snog-diff": "bin/diff.js"
@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [ "snapshot" ],
   "author": "joshwnj",
   "license": "MIT",
   "dependencies": {
@@ -21,5 +21,14 @@
     "mkdirp": "^0.5.1",
     "pretty-format": "^20.0.3",
     "readline-sync": "^1.4.7"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshwnj/snog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joshwnj/snog/issues"
+  },
+  "homepage": "https://github.com/joshwnj/snog#readme"
 }
