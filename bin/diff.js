@@ -26,7 +26,7 @@ const opts = {
 }
 
 if (opts.watch) {
-  const watcher = chokidar.watch(latestDir, {
+  const watcher = chokidar.watch(`${latestDir}/**/*.txt`, {
     ignored: /^\./,
     persistent: true
   })
@@ -40,6 +40,22 @@ if (opts.watch) {
 }
 else {
   oneoff()
+}
+
+function getSrcLines (caller) {
+  return fs.readFileSync(caller.file, 'utf-8').split(/[\r\n]/)
+}
+
+function formatSrcLines (rawLines, lineNum) {
+  const startLineNum = Math.max(lineNum - 1, 1)
+  const endLineNum = Math.min(lineNum + 1, rawLines.length)
+
+  const lines = []
+  for (var i=startLineNum; i<=endLineNum; i+=1) {
+    var color = i === lineNum ? 'white' : 'dim'
+    lines.push(chalk[color](`${i}:\t${rawLines[i-1]}`))
+  }
+  return lines.join('\n')
 }
 
 function promptForUpdate (f, latest) {
@@ -60,6 +76,15 @@ function check (f) {
   const latest = fs.readFileSync(f, 'utf8')
   let ref
 
+  let srcLines
+  let meta
+  try {
+    meta = JSON.parse(fs.readFileSync(f.replace(/\.txt$/, '.json')))
+    srcLines = getSrcLines(meta.caller)
+  } catch (e) {
+    console.error(e)
+  }
+
   try {
     ref = fs.readFileSync(path.join(refDir, relFilename), 'utf8')
   }
@@ -71,7 +96,12 @@ function check (f) {
     return
   }
 
-  console.log(relFilename)
+  console.log('\n' + chalk.bgBlack(relFilename))
+
+  if (meta) {
+    console.log(formatSrcLines(srcLines, meta.caller.line))
+  }
+
   const result = diff(
     { value: JSON.parse(ref) },
     { value: JSON.parse(latest) }

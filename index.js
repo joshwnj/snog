@@ -35,8 +35,11 @@ function snog (info) {
   const filename = label + '.txt'
   const metadata = {
     ts: Date.now(),
-    label: label,
-    stack: cs
+    caller: {
+      'file': caller.getFileName(),
+      'line': caller.getLineNumber(),
+      'function': caller.getFunctionName()
+    }
   }
   // TODO: store metadata separately
 
@@ -51,8 +54,14 @@ function snog (info) {
 
     fs.writeFile(path.join(destDir, filename), content, (err) => {
       if (err) {
-        console.error(err)
+        return console.error(err)
       }
+
+      fs.writeFile(path.join(destDir, filename.replace(/\.txt$/, '.json')), JSON.stringify(metadata), (err) => {
+        if (err) {
+          return console.error(err)
+        }
+      })
     })
   })
 }
