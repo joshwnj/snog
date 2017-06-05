@@ -8,17 +8,17 @@ First add it to your project with `npm install --save snog`
 
 Then add a few snogs here and there in your code. Eg.
 
-```
+```js
 const snog = require('snog')
 
 
 // ... lots of code ...
 
-snog('my-label', { a, b, c })
+snog({ a, b, c })
 
 // ... more code ...
 
-snog('another-thing', { d, e })
+snog({ d, e })
 ```
 
 Whenever this code runs, it will record a snapshot of whatever you give it (eg. `{ a, b, c}`).

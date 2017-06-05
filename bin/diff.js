@@ -10,7 +10,7 @@ const mkdirp = require('mkdirp')
 const readlineSync = require('readline-sync')
 
 const {
-  NO_DIFF_MESSAGE, 
+  NO_DIFF_MESSAGE,
   SIMILAR_MESSAGE
 } = require('jest-diff/build/constants');
 
@@ -32,8 +32,8 @@ if (opts.watch) {
   })
 
   watcher
-    .on('add', f => check(path.basename(f)))
-    .on('change', f => check(path.basename(f)))
+    .on('add', f => check(f))
+    .on('change', f => check(f))
     .on('error', err => console.error(err))
 
   console.log(chalk.dim('watching ' + latestDir + ' for changes...'))
@@ -44,8 +44,10 @@ else {
 
 function promptForUpdate (f, latest) {
   const updateRef = readlineSync.keyInYN('Update ref?')
+  const destFile = path.join(refDir, f)
   if (updateRef) {
-    fs.writeFileSync(path.join(refDir, f), latest)
+    mkdirp.sync(path.dirname(destFile))
+    fs.writeFileSync(destFile, latest)
     console.log(chalk.dim('...updated\n'))
   }
   else {
@@ -54,29 +56,30 @@ function promptForUpdate (f, latest) {
 }
 
 function check (f) {
-  const latest = fs.readFileSync(path.join(latestDir, f), 'utf8')
+  const relFilename = f.substr(latestDir.length + 1)
+  const latest = fs.readFileSync(f, 'utf8')
   let ref
 
   try {
-    ref = fs.readFileSync(path.join(refDir, f), 'utf8')
+    ref = fs.readFileSync(path.join(refDir, relFilename), 'utf8')
   }
   catch (e) {
     // no ref file
-    console.log('no ref for', f)
+    console.log('no ref for', relFilename)
     console.log(chalk.green(latest))
-    promptForUpdate(f, latest)
+    promptForUpdate(relFilename, latest)
     return
   }
 
-  console.log(f)
+  console.log(relFilename)
   const result = diff(
-    { value: JSON.parse(latest) },
-    { value: JSON.parse(ref) }
+    { value: JSON.parse(ref) },
+    { value: JSON.parse(latest) }
   )
 
   if (result !== NO_DIFF_MESSAGE) {
     console.log(result)
-    promptForUpdate(f, latest)
+    promptForUpdate(relFilename, latest)
   }
   else {
     console.log(result)
