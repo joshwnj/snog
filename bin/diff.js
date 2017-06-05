@@ -47,8 +47,9 @@ function getSrcLines (caller) {
 }
 
 function formatSrcLines (rawLines, lineNum) {
-  const startLineNum = Math.max(lineNum - 1, 1)
-  const endLineNum = Math.min(lineNum + 1, rawLines.length)
+  const SURROUNDING = 1
+  const startLineNum = Math.max(lineNum - SURROUNDING, 1)
+  const endLineNum = Math.min(lineNum + SURROUNDING, rawLines.length)
 
   const lines = []
   for (var i=startLineNum; i<=endLineNum; i+=1) {
