@@ -39,10 +39,16 @@ There are 2 sets of files, which are counterparts laid out like this:
 
 ```
 __snog__/
-  ref/
-    <label>.txt
-  latest/
-    <label>.txt
+├── latest
+│   └── <srcdir>
+│       └── <srcfile>.js
+│           ├── <func>-<line>.txt
+│           └── <func>-<line>.txt
+└── ref
+    └── <srcdir>
+        └── <srcfile>.js
+            ├── <func>-<line>.txt
+            └── <func>-<line>.txt
 ```
 
 The files in `__snog__/latest` represent the logs from the most recent run, and will be compared with the file of the same name in `__snog__/ref`.
