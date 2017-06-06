@@ -86,6 +86,12 @@ function check (f) {
     console.error(e)
   }
 
+  console.log('\n' + chalk.bgBlack(relFilename))
+
+  if (meta) {
+    console.log(formatSrcLines(srcLines, meta.caller.line))
+  }
+
   try {
     ref = fs.readFileSync(path.join(refDir, relFilename), 'utf8')
   }
@@ -95,12 +101,6 @@ function check (f) {
     console.log(chalk.green(latest))
     promptForUpdate(relFilename, latest)
     return
-  }
-
-  console.log('\n' + chalk.bgBlack(relFilename))
-
-  if (meta) {
-    console.log(formatSrcLines(srcLines, meta.caller.line))
   }
 
   const result = diff(
